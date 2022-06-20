@@ -20,7 +20,8 @@ final class HomepagePresenter extends Nette\Application\UI\Presenter
 
 	public function beforeRender() {
 		$this->template->users = $this->em->getRepository(User::class)->findAll();
-		$this->template->loggedUser = User::getById($this->em, $this->user->getId());
+		if($this->user->isLoggedIn())
+			$this->template->loggedUser = User::getById($this->em, $this->user->getId());
 	}
 
 	protected function createComponentCreateUserForm(): Form
@@ -38,5 +39,9 @@ final class HomepagePresenter extends Nette\Application\UI\Presenter
 		$u->setEmail("dude@mail.com");
 		$u->setPassword("1234");
 		$u->save($this->em);
+	}
+
+	public function handleLogout(){
+		$this->user->logout(true);
 	}
 }

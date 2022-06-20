@@ -5,6 +5,7 @@
 	<a n:href="Login:">Login</a>
 {else}
 	<h3>Logged in as {$loggedUser->getEmail()}</h3>
+	<a n:href="logout!">Logout</a>
 {/if}
 {control createUserForm}
 <ul>
