@@ -4,13 +4,14 @@
 {if !$user->isLoggedIn()}
 	<a n:href="Login:">Login</a>
 {else}
-	<h3>Logged in as {$loggedUser->getEmail()}</h3>
+	<h3>Logged in as {$loggedUser->getEmail()} [{$loggedUser->getRole()}]</h3>
 	<a n:href="logout!">Logout</a>
+	<a n:href="createUser!">Create User</a>
 {/if}
-{control createUserForm}
 <ul>
 	{foreach $users as $userEntity}
-	<li>{$userEntity->getEmail()}</li>
+	{var $email = $userEntity->getEmail()}
+	<li><a n:href="login! $email">{$email}</a></li>
 	{/foreach}
 </ul>
 

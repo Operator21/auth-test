@@ -15,13 +15,13 @@ class CustomAuthenticator implements Authenticator {
 	) {	
 	}
 
-	public function authenticate(string $email, string $password): IIdentity
+	public function authenticate(string $email, $password = ""): IIdentity
 	{
 		$user = $this->em->getRepository(User::class)->findOneBy(["email" => $email]);
 
-		if($user->getPassword() == $password)
-			return new SimpleIdentity($user->getId(), $user->getRole());
+		if(!$user)
+			throw new AuthenticationException("User doesn't exist");	
 
-		throw new AuthenticationException("Invalid password");		
+		return new SimpleIdentity($user->getId(), $user->getRole());	
 	}
 }

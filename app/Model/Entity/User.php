@@ -21,7 +21,7 @@ class User {
 	#[Column(type: "string", length: 255)]
 	private string $password;
 
-	#[Column(type: "string", length: 5)]
+	#[Column(type: "string", length: 5), GeneratedValue]
 	private string $role;
 
 	public function getId(): int {
@@ -48,6 +48,10 @@ class User {
 		$this->password = $password;
 	}
 
+	public function setRole($role) {
+		$this->role = $role;
+	}
+
 	public function save(EntityManagerInterface $em) {
 		$em->persist($this);
 		$em->flush();
@@ -55,5 +59,14 @@ class User {
 
 	public static function getById(EntityManagerInterface $em, $id): ?User {
 		return $em->find(User::class, $id);
+	}
+
+	private static $chars = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
+
+	public static function randomEmail($size = 10) {
+		$returnValue = "";
+		for($x = 0; $x < $size; $x++)
+			$returnValue[$x] = User::$chars[rand(0, sizeof(User::$chars)-1)];
+		return "$returnValue@mail.com";
 	}
 }

@@ -21,7 +21,6 @@ final class LoginPresenter extends Nette\Application\UI\Presenter
 	{
 		$form = new Form();
 		$form->addEmail("email", "Email:");
-		$form->addPassword("password", "Password:");
 		$form->addSubmit("login", "Login");
 		$form->onSuccess[] = [$this, "onLogin"];
 
@@ -30,7 +29,7 @@ final class LoginPresenter extends Nette\Application\UI\Presenter
 
 	public function onLogin(Form $form, $data) {
 		try {
-			$this->getUser()->login($data->email, $data->password);
+			$this->getUser()->login($data->email, "");
 			$this->redirect("Homepage:");
 		} catch(AuthenticationException $e) {
 			$this->flashMessage($data->email);

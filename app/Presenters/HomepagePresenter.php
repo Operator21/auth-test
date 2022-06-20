@@ -33,15 +33,19 @@ final class HomepagePresenter extends Nette\Application\UI\Presenter
 		return $form;
 	}
 
-	public function createUser(Form $form, $data)
-	{
+	public function handleCreateUser() {
 		$u = new User();
-		$u->setEmail("dude@mail.com");
+		$u->setEmail(User::randomEmail());
 		$u->setPassword("1234");
+		$u->setRole("user");
 		$u->save($this->em);
 	}
 
 	public function handleLogout(){
 		$this->user->logout(true);
+	}
+
+	public function handleLogin($email){
+		$this->user->login($email);
 	}
 }
