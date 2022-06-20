@@ -1,0 +1,15 @@
+{block content}
+<h1 n:block=title>Home</h1>
+<p>{$_SERVER['REMOTE_ADDR']}</p>
+{if !$user->isLoggedIn()}
+	<a n:href="Login:">Login</a>
+{else}
+	<h3>Logged in as {$loggedUser->getEmail()}</h3>
+{/if}
+{control createUserForm}
+<ul>
+	{foreach $users as $userEntity}
+	<li>{$userEntity->getEmail()}</li>
+	{/foreach}
+</ul>
+
