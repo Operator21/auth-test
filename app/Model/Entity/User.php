@@ -1,17 +1,20 @@
 <?php
 namespace App\Model\Entity;
 
-use Doctrine\ORM\EntityManager;
+use App\Security\AuthorizatorFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Table;
+use Nette\Security\Resource;
+use Nette\Security\Role;
 
 #[Entity]
 #[Table(name: "user")]
-class User {
+class User extends CEntity implements Role, Resource{
+
 	#[Id, Column(unique: true, type: "integer"), GeneratedValue]
 	private int $id;
 
@@ -36,8 +39,12 @@ class User {
 		return $this->password;
 	}
 
-	public function getRole(): string {
+	public function getRoleId(): string {
 		return $this->role;
+	}
+
+	public function getResourceId(): string {
+		return AuthorizatorFactory::RESOURCE_USER;
 	}
 
 	public function setEmail($email) {
@@ -50,11 +57,6 @@ class User {
 
 	public function setRole($role) {
 		$this->role = $role;
-	}
-
-	public function save(EntityManagerInterface $em) {
-		$em->persist($this);
-		$em->flush();
 	}
 
 	public static function getById(EntityManagerInterface $em, $id): ?User {

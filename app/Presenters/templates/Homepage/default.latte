@@ -4,14 +4,36 @@
 {if !$user->isLoggedIn()}
 	<a n:href="Login:">Login</a>
 {else}
-	<h3>Logged in as {$loggedUser->getEmail()} [{$loggedUser->getRole()}]</h3>
+	<h3>Logged in as {$loggedUser->getEmail()} [{$loggedUser->getRoleId()}]</h3>
 	<a n:href="logout!">Logout</a>
 	<a n:href="createUser!">Create User</a>
+	<a n:href="createArticle!">Create Article</a>
 {/if}
+{if $users}
+<h3>Click email to login as clicked user</h3>
+<h4>Only users with admin role work as intended</h4>
 <ul>
 	{foreach $users as $userEntity}
-	{var $email = $userEntity->getEmail()}
-	<li><a n:href="login! $email">{$email}</a></li>
+		{var $email = $userEntity->getEmail()}
+		<li><a n:href="login! $email">[{$userEntity->getRoleId()}] {$email}</a>
+		{if $user->isAllowed($userEntity)}
+			{var $id = $userEntity->getId()}
+			<a n:href="delete! $id">x</a>
+		{/if}
+		</li>
 	{/foreach}
 </ul>
+{/if}
 
+{if $articles}
+<ul>
+	{foreach $articles as $article}
+		{var $article_id = $article->getId()}
+		<li><a n:href="view! $article_id">{$article_id}</a>
+			{if $user->isAllowed($article)}
+				<a n:href="deleteArticle! $article_id">x</a>
+			{/if}
+		</li>
+	{/foreach}
+</ul>
+{/if}

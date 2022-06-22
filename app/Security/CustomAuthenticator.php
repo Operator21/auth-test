@@ -1,9 +1,8 @@
 <?php
-namespace App\Model;
+namespace App\Security;
 
 use App\Model\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Nette;
 use Nette\Security\AuthenticationException;
 use Nette\Security\Authenticator;
 use Nette\Security\IIdentity;
@@ -22,6 +21,6 @@ class CustomAuthenticator implements Authenticator {
 		if(!$user)
 			throw new AuthenticationException("User doesn't exist");	
 
-		return new SimpleIdentity($user->getId(), $user->getRole());	
+		return new SimpleIdentity($user->getId(), $user->getRoleId());	
 	}
 }
