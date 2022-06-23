@@ -48,7 +48,7 @@ class AuthorizatorFactory {
 			$resource = $acl->getQueriedResource();
 			return $role === $resource->getOwner();
 		};
-		$acl->allow(self::ROLE_USER, self::RESOURCE_ARTICLE, self::ACTION_DELETE, $assertion);
+		$acl->allow(self::ROLE_USER, self::RESOURCE_ARTICLE, self::ACTION_ALL, $assertion);
 
 		AuthorizatorFactory::$acl = $acl;
 		return $acl;

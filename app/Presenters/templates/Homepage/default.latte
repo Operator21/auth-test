@@ -25,7 +25,7 @@
 </ul>
 {/if}
 
-{if $articles && $acl->isAllowed($loggedUser, $article, "view")}
+{if $articles}
 <ul>
 	{foreach $articles as $article}
 		{var $article_id = $article->getId()}
