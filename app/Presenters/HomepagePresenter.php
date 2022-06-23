@@ -1,16 +1,12 @@
 <?php
 namespace App\Presenters;
 
-use App\Model\AuthorizatorFactory;
-use App\Model\CustomAuthorizator;
 use App\Model\Entity\Article;
 use App\Model\Entity\User;
-use App\Model\IAuthorizationScope;
+use App\Security\AuthorizatorFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Nette;
-use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Form;
-use Nette\Security\Authorizator;
 
 final class HomepagePresenter extends Nette\Application\UI\Presenter
 {
@@ -23,7 +19,10 @@ final class HomepagePresenter extends Nette\Application\UI\Presenter
 		$this->template->users = $this->em->getRepository(User::class)->findAll();
 		$this->template->articles = $this->em->getRepository(Article::class)->findAll();
 		if($this->user->isLoggedIn())
-			$this->template->loggedUser = User::getById($this->em, $this->user->getId());
+		$loggedUser = User::getById($this->em, $this->user->getId());
+			$this->template->loggedUser = $loggedUser;	
+			
+		$this->template->acl = AuthorizatorFactory::$acl;
 	}
 
 	protected function createComponentCreateUserForm(): Form
