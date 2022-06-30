@@ -2,3 +2,4 @@ services:
 	- App\Router\RouterFactory::createRouter
 	- App\Security\CustomAuthenticator
 	- App\Security\AuthorizatorFactory::create
+	- App\Security\CustomAuthorizator

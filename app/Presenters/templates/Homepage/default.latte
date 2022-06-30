@@ -4,7 +4,7 @@
 {if !$user->isLoggedIn()}
 	<a n:href="Login:">Login</a>
 {else}
-	<h3>Logged in as {$loggedUser->getEmail()} [{$loggedUser->getRoleId()}]</h3>
+	<h3>Logged in as {$loggedUser->getEmail()} [{$loggedUser->getRole()}]</h3>
 	<a n:href="logout!">Logout</a>
 	<a n:href="createUser!">Create User</a>
 	<a n:href="createArticle!">Create Article</a>
@@ -15,8 +15,8 @@
 <ul>
 	{foreach $users as $userEntity}
 		{var $email = $userEntity->getEmail()}
-		<li><a n:href="login! $email">[{$userEntity->getRoleId()}] {$email}</a>
-		{if $user->isAllowed($userEntity)}
+		<li><a n:href="login! $email">[{$userEntity->getRole()}] {$email}</a>
+		{if $user->isLoggedIn() && $authorizator->isAllowed($user->getIdentity(), $userEntity, $userEntity::ACTION_DELETE)}
 			{var $id = $userEntity->getId()}
 			<a n:href="delete! $id">x</a>
 		{/if}
@@ -30,7 +30,7 @@
 	{foreach $articles as $article}
 		{var $article_id = $article->getId()}
 		<li><a n:href="view! $article_id">{$article_id}</a>
-			{if $acl->isAllowed($loggedUser, $article, "delete")}
+			{if $user->isLoggedIn() && $authorizator->isAllowed($user->getIdentity(), $article, $article::ACTION_DELETE)}
 				<a n:href="deleteArticle! $article_id">x</a>
 			{/if}
 		</li>

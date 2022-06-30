@@ -2,6 +2,8 @@
 
 namespace App\Security;
 
+use App\Model\Entity\Article;
+use App\Model\Entity\User;
 use Nette\Security\Permission;
 
 class AuthorizatorFactory {
@@ -9,8 +11,8 @@ class AuthorizatorFactory {
 	const ROLE_USER = "user"; 
 	const ROLE_GUEST = "guest"; 
 
-	const RESOURCE_ARTICLE = "article";
-	const RESOURCE_USER = "user";
+	const RESOURCE_ARTICLE = Article::class;
+	const RESOURCE_USER = User::class;
 
 	const ACTION_VIEW = "view";
 	const ACTION_CREATE = "create";
@@ -37,20 +39,26 @@ class AuthorizatorFactory {
 		$acl->addRole(self::ROLE_ADMIN);
 		$acl->addRole(self::ROLE_USER);
 		$acl->addRole(self::ROLE_GUEST);
+		$acl->addRole(Article::ROLE_AUTHOR);
+		$acl->addRole(User::ROLE_OWNER);
 
 		//admin has total control
 		$acl->allow(self::ROLE_ADMIN, self::RESOURCE_USER);
 		$acl->allow(self::ROLE_ADMIN, self::RESOURCE_ARTICLE);
 
-		//if user equals author -> allow deletion
-		$assertion = function (Permission $acl, string $role, string $resource, string $privilege): bool {
-			$role = $acl->getQueriedRole();
-			$resource = $acl->getQueriedResource();
-			return $role === $resource->getOwner();
-		};
-		$acl->allow(self::ROLE_USER, self::RESOURCE_ARTICLE, self::ACTION_ALL, $assertion);
-
 		AuthorizatorFactory::$acl = $acl;
+
+		//if user equals author -> allow deletion
+		self::allow(Article::ROLE_AUTHOR, Article::ACTION_DELETE);
+
+		//user can delete himself
+		self::allow(User::ROLE_OWNER, User::ACTION_DELETE);
+
 		return $acl;
+	}
+
+	private static function allow(string $role, array $action) {
+		list($resource, $privilege) = $action;
+		self::$acl->allow($role, $resource, $privilege);
 	}
 }

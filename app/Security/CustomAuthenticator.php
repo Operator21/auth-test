@@ -21,6 +21,6 @@ class CustomAuthenticator implements Authenticator {
 		if(!$user)
 			throw new AuthenticationException("User doesn't exist");	
 
-		return new SimpleIdentity($user->getId(), $user->getRoleId());	
+		return new SimpleIdentity($user->getId(), $user->getRole());	
 	}
 }

@@ -3,6 +3,7 @@
 namespace App\Model\Entity;
 
 use App\Security\AuthorizatorFactory;
+use App\Security\IAuthorizationScope;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\GeneratedValue;
@@ -10,11 +11,15 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
-use Nette\Security\Resource;
+use Nette\Security\SimpleIdentity;
 
 #[Entity]
 #[Table(name: "article")]
-class Article extends CEntity implements Resource  {
+class Article extends CEntity implements IAuthorizationScope  {
+	const ROLE_AUTHOR = Article::class . ":author";
+
+	const ACTION_DELETE = [self::class, "delete"];
+
 	#[Id, Column(unique: true, type: "integer"), GeneratedValue]
 	private int $id;
 
@@ -28,8 +33,11 @@ class Article extends CEntity implements Resource  {
 		return $this->id;
 	}
 
-	public function getResourceId(): string {
-		return AuthorizatorFactory::RESOURCE_ARTICLE;
+	public function getIdentityRoles(SimpleIdentity $identity): array {
+		if ($this->getOwner()->getId() === $identity->getId()) {
+			return [self::ROLE_AUTHOR];
+		}
+		return [];
 	}
 
 	public function getContent(): string{

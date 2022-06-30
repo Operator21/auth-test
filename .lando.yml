@@ -1,5 +1,5 @@
 name: auth-test
 recipe: lamp
 config:
-  webroot: .
+  webroot: www
   php: '8.1'
